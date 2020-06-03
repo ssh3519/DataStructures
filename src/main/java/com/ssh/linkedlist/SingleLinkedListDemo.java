@@ -1,5 +1,8 @@
 package com.ssh.linkedlist;
 
+import java.util.HashMap;
+import java.util.Stack;
+
 /**
  * @author: ssh
  * @email: 18367183519@163.com
@@ -24,13 +27,29 @@ public class SingleLinkedListDemo {
         System.out.println("删除之后----------------------------------");
         singleLinkedList.delete(1);
         singleLinkedList.list();
+        int length = SingleLinkedList.getLength(singleLinkedList.getHead());
+        System.out.println("节点数："+length);
+        int k = 2;
+        HeroNode heroNode = SingleLinkedList.findLastIndexNode(singleLinkedList.getHead(), k);
+        System.out.println("倒数第"+k+"个节点："+heroNode);
+        System.out.println("链表反转之后----------------------------------");
+        SingleLinkedList.reversetList(singleLinkedList.getHead());
+        singleLinkedList.list();
+
+        System.out.println("逆序输出之后----------------------------------");
+        SingleLinkedList.reversePrint(singleLinkedList.getHead());
     }
+
 }
 
 //定义SingleLinkedList管理节点
 class SingleLinkedList{
     //初始化一个头结点
     private HeroNode head = new HeroNode(0,"","");
+
+    public HeroNode getHead() {
+        return head;
+    }
 
     //添加节点
     //1.找到当前链表的最后节点
@@ -141,6 +160,87 @@ class SingleLinkedList{
             System.out.println("没有找到");
         }
     }
+
+    //获取到单链表的节点的个数（如果带节点的链表，不需要统计头）
+
+    /**
+     *
+     * @param head 链表头结点
+     * @return  返回节点数
+     */
+    public static int getLength(HeroNode head){
+        HeroNode temp = head.next;
+        int count = 0;
+        while (temp != null){
+            count++;
+            temp = temp.next;
+        }
+        return count;
+    }
+
+    //获取链表倒数第k个节点
+    //length - k
+    public static HeroNode findLastIndexNode(HeroNode head,int index){
+        //链表为空
+        if (head.next == null){
+            return null;
+        }
+        //节点的长度
+        int size = getLength(head);
+
+        if (index <= 0 || index > size){
+            return null;
+        }
+
+        HeroNode temp = head.next;
+        for (int i = 0; i < size - index; i++) {
+            temp = temp.next;
+        }
+        return temp;
+    }
+
+    //单链表反转
+    public static void reversetList(HeroNode head){
+        //判断列表为空或者只有一个节点，无需反转，直接返回
+        if (head.next == null ||head.next.next == null){
+            return;
+        }
+        //辅助节点，遍历原链表
+        HeroNode cur = head.next;
+        //指向当前链表的下一个节点[cur]
+        HeroNode next = null;
+        //反转头结点
+        HeroNode reverseHead = new HeroNode(0,"","");
+
+        while (cur != null){
+            //记录当前节点的下一个节点，后面用
+            next = cur.next;
+            //cur下一节点指向新链表的最前端
+            cur.next=reverseHead.next;
+            reverseHead.next = cur;
+            //后移
+            cur = next;
+        }
+        //将原链表的头结点指向新链表
+        head.next = reverseHead.next;
+    }
+
+    //逆序打印，Stack
+    public static void reversePrint(HeroNode head){
+        if (head.next == null){
+            System.out.println("链表为空");
+        }
+        HeroNode temp = head.next;
+        Stack<HeroNode> stack = new Stack<>();
+        while (temp != null){
+            stack.push(temp);
+            temp = temp.next;
+        }
+        while (!stack.isEmpty()){
+            System.out.println(stack.pop());
+        }
+    }
+
 }
 
 //定义节点
